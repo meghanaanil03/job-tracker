@@ -3,11 +3,44 @@ const cors = require("cors");
 
 const app = express();
 
+require("dotenv").config();
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-app.get("/job", (req, res) => {
-  res.json({ ok: true, message: "API is running" });
+app.get("/jobs", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM jobs ORDER BY created_at DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
+app.post("/jobs", async (req, res) => {
+  try {
+    const { company, roleTitle, status } = req.body;
+
+    if (!company || !roleTitle) {
+        return res.status(400).json({ error: "company and roleTitle are required" });
+    }
+
+    const result = await pool.query(
+      "INSERT INTO jobs (company, role_title, status) VALUES ($1, $2, $3) RETURNING *",
+      [company, roleTitle, status || "Saved"]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
 });
 
 app.listen(4000, () => {
