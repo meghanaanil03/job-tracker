@@ -97,7 +97,7 @@ export default function App() {
             <li className="item" key={j.id}>
               <div className="itemTitle">
                 <div className="company">
-                  {j.company} <span className="badge">{j.status}</span>
+                  {j.company} <span className={`badge ${j.status.toLowerCase()}`}>{j.status}</span>
                 </div>
                 <div className="meta">{j.role_title}</div>
               </div>
