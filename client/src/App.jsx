@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 
 const API = "http://localhost:4000";
 
@@ -45,52 +46,71 @@ export default function App() {
   }
 
   async function deleteJob(id) {
-  const res = await fetch(`${API}/jobs/${id}`, { method: "DELETE" });
-
-  if (!res.ok) {
-    alert("Failed to delete job");
-    return;
-  }
-
-  fetchJobs();
+    const res = await fetch(`${API}/jobs/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      alert("Failed to delete job");
+      return;
+    }
+    fetchJobs();
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: "40px auto", fontFamily: "system-ui" }}>
-      <h1>Job Tracker</h1>
+    <div className="container">
+      <div className="header">
+        <div>
+          <h1 className="title">Job Tracker</h1>
+          <p className="subtitle">Track applications across stages and keep everything in one place.</p>
+        </div>
+      </div>
 
-      <form onSubmit={addJob} style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        <input
-          placeholder="Company"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-        />
-        <input
-          placeholder="Role Title"
-          value={roleTitle}
-          onChange={(e) => setRoleTitle(e.target.value)}
-        />
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {["Saved", "Applied", "Interview", "Offer", "Rejected"].map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
+      <div className="card">
+        <form onSubmit={addJob} className="formRow">
+          <input
+            className="input"
+            placeholder="Company"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+          />
+
+          <input
+            className="input"
+            placeholder="Role Title"
+            value={roleTitle}
+            onChange={(e) => setRoleTitle(e.target.value)}
+          />
+
+          <select className="select" value={status} onChange={(e) => setStatus(e.target.value)}>
+            {["Saved", "Applied", "Interview", "Offer", "Rejected"].map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+
+          <button className="btn" type="submit">
+            Add Job
+          </button>
+        </form>
+
+        <ul className="list">
+          {jobs.map((j) => (
+            <li className="item" key={j.id}>
+              <div className="itemTitle">
+                <div className="company">
+                  {j.company} <span className="badge">{j.status}</span>
+                </div>
+                <div className="meta">{j.role_title}</div>
+              </div>
+
+              <div className="actions">
+                <button className="btn btnDanger" onClick={() => deleteJob(j.id)} type="button">
+                  Delete
+                </button>
+              </div>
+            </li>
           ))}
-        </select>
-        <button type="submit">Add</button>
-      </form>
-
-      <ul>
-        {jobs.map((j) => (
-          <li key={j.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-            <span>
-              {j.company} — {j.role_title} ({j.status})
-            </span>
-
-            <button onClick={() => deleteJob(j.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+        </ul>
+      </div>
     </div>
   );
 }
