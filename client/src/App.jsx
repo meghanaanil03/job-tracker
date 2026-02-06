@@ -44,6 +44,17 @@ export default function App() {
     fetchJobs();
   }
 
+  async function deleteJob(id) {
+  const res = await fetch(`${API}/jobs/${id}`, { method: "DELETE" });
+
+  if (!res.ok) {
+    alert("Failed to delete job");
+    return;
+  }
+
+  fetchJobs();
+  }
+
   return (
     <div style={{ maxWidth: 800, margin: "40px auto", fontFamily: "system-ui" }}>
       <h1>Job Tracker</h1>
@@ -71,8 +82,12 @@ export default function App() {
 
       <ul>
         {jobs.map((j) => (
-          <li key={j.id}>
-            {j.company} — {j.role_title} ({j.status})
+          <li key={j.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+            <span>
+              {j.company} — {j.role_title} ({j.status})
+            </span>
+
+            <button onClick={() => deleteJob(j.id)}>Delete</button>
           </li>
         ))}
       </ul>
