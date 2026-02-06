@@ -43,6 +43,26 @@ app.post("/jobs", async (req, res) => {
   }
 });
 
+app.delete("/jobs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "DELETE FROM jobs WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.json({ deleted: true, job: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
 app.listen(4000, () => {
   console.log("API running on http://localhost:4000");
 });
