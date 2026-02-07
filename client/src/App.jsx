@@ -127,31 +127,38 @@ export default function App() {
           </button>
         </form>
 
-        <ul className="list">
-          {filteredJobs.map((j) => (
-            <li className="item" key={j.id}>
-              <div className="itemTitle">
-                <div className="company">
-                  {j.company}{" "}
-                  <span className={`badge ${j.status.toLowerCase()}`}>
-                    {j.status}
-                  </span>
-                </div>
-                <div className="meta">{j.role_title}</div>
-              </div>
+        <div className="resultsArea">
+  {filteredJobs.length === 0 ? (
+    <div className="emptyState">No jobs match this filter.</div>
+  ) : (
+    <ul className="list">
+      {filteredJobs.map((j) => (
+        <li className="item" key={j.id}>
+          <div className="itemTitle">
+            <div className="company">
+              {j.company}{" "}
+              <span className={`badge ${j.status.toLowerCase()}`}>
+                {j.status}
+              </span>
+            </div>
+            <div className="meta">{j.role_title}</div>
+          </div>
 
-              <div className="actions">
-                <button
-                  className="btn btnDanger"
-                  onClick={() => deleteJob(j.id)}
-                  type="button"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+          <div className="actions">
+            <button
+              className="btn btnDanger"
+              onClick={() => deleteJob(j.id)}
+              type="button"
+            >
+              Delete
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
       </div>
     </div>
   );
