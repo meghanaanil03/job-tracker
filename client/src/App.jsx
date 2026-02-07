@@ -6,11 +6,16 @@ const API = "http://localhost:4000";
 export default function App() {
   const [jobs, setJobs] = useState([]);
 
-  const [company, setCompany] = useState("");
-  const [roleTitle, setRoleTitle] = useState("");
-  const [status, setStatus] = useState("Saved");
+  const [form, setForm] = useState({
+    company: "",
+    roleTitle: "",
+    status: "Saved",
+    location: "",
+    link: "",
+    notes: "",
+    applied_date: "",
+  });
 
-  //filter state
   const [filterStatus, setFilterStatus] = useState("All");
 
   async function fetchJobs() {
@@ -26,7 +31,7 @@ export default function App() {
   async function addJob(e) {
     e.preventDefault();
 
-    if (!company.trim() || !roleTitle.trim()) {
+    if (!form.company.trim() || !form.roleTitle.trim()) {
       alert("Company and Role Title are required");
       return;
     }
@@ -34,7 +39,7 @@ export default function App() {
     const res = await fetch(`${API}/jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ company, roleTitle, status }),
+      body: JSON.stringify(form),
     });
 
     if (!res.ok) {
@@ -42,9 +47,16 @@ export default function App() {
       return;
     }
 
-    setCompany("");
-    setRoleTitle("");
-    setStatus("Saved");
+    setForm({
+      company: "",
+      roleTitle: "",
+      status: "Saved",
+      location: "",
+      link: "",
+      notes: "",
+      applied_date: "",
+    });
+
     fetchJobs();
   }
 
@@ -57,11 +69,8 @@ export default function App() {
     fetchJobs();
   }
 
-  // filtered list
   const filteredJobs =
-    filterStatus === "All"
-      ? jobs
-      : jobs.filter((j) => j.status === filterStatus);
+    filterStatus === "All" ? jobs : jobs.filter((j) => j.status === filterStatus);
 
   return (
     <div className="container">
@@ -76,9 +85,18 @@ export default function App() {
 
       <div className="card">
         {/* Filter bar */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 12,
+          }}
+        >
           <div style={{ color: "var(--muted)", fontSize: 13 }}>
-            Showing <b style={{ color: "var(--text)" }}>{filteredJobs.length}</b> job(s)
+            Showing <b style={{ color: "var(--text)" }}>{filteredJobs.length}</b>{" "}
+            job(s)
           </div>
 
           <select
@@ -87,33 +105,36 @@ export default function App() {
             onChange={(e) => setFilterStatus(e.target.value)}
             style={{ maxWidth: 220 }}
           >
-            {["All", "Saved", "Applied", "Interview", "Offer", "Rejected"].map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
+            {["All", "Saved", "Applied", "Interview", "Offer", "Rejected"].map(
+              (s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              )
+            )}
           </select>
         </div>
 
+        {/* Row 1: core fields */}
         <form onSubmit={addJob} className="formRow">
           <input
             className="input"
             placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            value={form.company}
+            onChange={(e) => setForm({ ...form, company: e.target.value })}
           />
 
           <input
             className="input"
             placeholder="Role Title"
-            value={roleTitle}
-            onChange={(e) => setRoleTitle(e.target.value)}
+            value={form.roleTitle}
+            onChange={(e) => setForm({ ...form, roleTitle: e.target.value })}
           />
 
           <select
             className="select"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            value={form.status}
+            onChange={(e) => setForm({ ...form, status: e.target.value })}
           >
             {["Saved", "Applied", "Interview", "Offer", "Rejected"].map((s) => (
               <option key={s} value={s}>
@@ -127,38 +148,100 @@ export default function App() {
           </button>
         </form>
 
+        {/* Row 2: extra fields */}
+        <div
+          className="formRow"
+          style={{
+            marginTop: 10,
+            gridTemplateColumns: "1fr 1fr 1fr",
+          }}
+        >
+          <input
+            className="input"
+            placeholder="Location"
+            value={form.location}
+            onChange={(e) => setForm({ ...form, location: e.target.value })}
+          />
+
+          <input
+            className="input"
+            placeholder="Job Link (https://...)"
+            value={form.link}
+            onChange={(e) => setForm({ ...form, link: e.target.value })}
+          />
+
+          <input
+            type="date"
+            className="input"
+            value={form.applied_date}
+            onChange={(e) => setForm({ ...form, applied_date: e.target.value })}
+          />
+        </div>
+
+        <textarea
+          className="input"
+          placeholder="Notes..."
+          rows="3"
+          value={form.notes}
+          onChange={(e) => setForm({ ...form, notes: e.target.value })}
+          style={{ marginTop: 10 }}
+        />
+
+        {/* Results */}
         <div className="resultsArea">
-  {filteredJobs.length === 0 ? (
-    <div className="emptyState">No jobs match this filter.</div>
-  ) : (
-    <ul className="list">
-      {filteredJobs.map((j) => (
-        <li className="item" key={j.id}>
-          <div className="itemTitle">
-            <div className="company">
-              {j.company}{" "}
-              <span className={`badge ${j.status.toLowerCase()}`}>
-                {j.status}
-              </span>
-            </div>
-            <div className="meta">{j.role_title}</div>
-          </div>
+          {filteredJobs.length === 0 ? (
+            <div className="emptyState">No jobs match this filter.</div>
+          ) : (
+            <ul className="list">
+              {filteredJobs.map((j) => (
+                <li className="item" key={j.id}>
+                  <div className="itemTitle">
+                    <div className="company">
+                      {j.link ? (
+                        <a
+                          href={j.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {j.company}
+                        </a>
+                      ) : (
+                        j.company
+                      )}{" "}
+                      <span className={`badge ${j.status.toLowerCase()}`}>
+                        {j.status}
+                      </span>
+                    </div>
 
-          <div className="actions">
-            <button
-              className="btn btnDanger"
-              onClick={() => deleteJob(j.id)}
-              type="button"
-            >
-              Delete
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+                    <div className="meta">
+                      {j.role_title}
+                      {j.location ? ` • ${j.location}` : ""}
+                      {j.applied_date
+                        ? ` • Applied ${String(j.applied_date).slice(0, 10)}`
+                        : ""}
+                    </div>
 
+                    {j.notes ? (
+                      <div className="meta" style={{ marginTop: 6 }}>
+                        {j.notes}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="actions">
+                    <button
+                      className="btn btnDanger"
+                      onClick={() => deleteJob(j.id)}
+                      type="button"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
