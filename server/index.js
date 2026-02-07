@@ -21,15 +21,34 @@ app.get("/jobs", async (req, res) => {
 
 app.post("/jobs", async (req, res) => {
   try {
-    const { company, roleTitle, status } = req.body;
+    const {
+      company,
+      roleTitle,
+      status,
+      location,
+      link,
+      notes,
+      applied_date
+      } = req.body;
 
     if (!company || !roleTitle) {
         return res.status(400).json({ error: "company and roleTitle are required" });
     }
 
     const result = await pool.query(
-      "INSERT INTO jobs (company, role_title, status) VALUES ($1, $2, $3) RETURNING *",
-      [company, roleTitle, status || "Saved"]
+      `INSERT INTO jobs 
+      (company, role_title, status, location, link, notes, applied_date) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7) 
+      RETURNING *`,
+      [
+        company,
+        roleTitle,
+        status || "Saved",
+        location || null,
+        link || null,
+        notes || null,
+        applied_date || null
+      ]
     );
 
     res.status(201).json(result.rows[0]);
