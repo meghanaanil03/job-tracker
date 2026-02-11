@@ -58,6 +58,49 @@ app.post("/jobs", async (req, res) => {
   }
 });
 
+app.put("/jobs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      company,
+      roleTitle,
+      status,
+      location,
+      link,
+      notes,
+      applied_date,
+    } = req.body;
+
+    const result = await pool.query(
+      `UPDATE jobs
+       SET company=$1,
+           role_title=$2,
+           status=$3,
+           location=$4,
+           link=$5,
+           notes=$6,
+           applied_date=$7
+       WHERE id=$8
+       RETURNING *`,
+      [
+        company,
+        roleTitle,
+        status,
+        location,
+        link,
+        notes,
+        applied_date,
+        id,
+      ]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
 app.delete("/jobs/:id", async (req, res) => {
   try {
     const { id } = req.params;
