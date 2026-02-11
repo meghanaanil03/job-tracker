@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { Trash2 } from "lucide-react";
 
 const API = "http://localhost:4000";
 
@@ -211,12 +212,13 @@ export default function App() {
 
                 <div className="actions">
                   <button
-                    className="btn btnDanger"
+                    className="iconBtn danger"
                     onClick={() => deleteJob(j.id)}
                     type="button"
                   >
-                    Delete
+                    <Trash2 size={18} strokeWidth={2.2} />
                   </button>
+
                 </div>
               </li>
             ))}

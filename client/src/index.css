@@ -47,7 +47,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #f3f3f6af;
 }
 button:focus,
 button:focus-visible {
@@ -66,3 +66,26 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 68, 68, 0.411);
+  background: rgba(245, 74, 74, 0.395);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.iconBtn:hover {
+  background: rgba(244, 54, 54, 0.642);
+  transform: translateY(-2px);
+}
+
+.iconBtn svg {
+  color: #ff9a9a;
+}
+
