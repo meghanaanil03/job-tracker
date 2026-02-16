@@ -38,29 +38,24 @@ export default function App() {
       return;
     }
 
-    const res = await fetch(`${API}/jobs`, {
-      method: "POST",
+    const method = editingId ? "PUT" : "POST";
+    const url = editingId ? `${API}/jobs/${editingId}` : `${API}/jobs`;
+
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
 
     if (!res.ok) {
-      alert("Failed to add job");
+      alert("Failed to save job");
       return;
     }
 
-    setForm({
-      company: "",
-      roleTitle: "",
-      status: "Saved",
-      location: "",
-      link: "",
-      notes: "",
-      applied_date: "",
-    });
-
+    cancelEdit(); // resets + clears editingId
     fetchJobs();
   }
+
 
   async function deleteJob(id) {
     const res = await fetch(`${API}/jobs/${id}`, { method: "DELETE" });
