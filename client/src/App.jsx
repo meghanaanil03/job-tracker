@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { Trash2 } from "lucide-react";
+import { Trash2, Pencil, X } from "lucide-react";
 
 const API = "http://localhost:4000";
 
@@ -18,6 +18,7 @@ export default function App() {
   });
 
   const [filterStatus, setFilterStatus] = useState("All");
+  const [editingId, setEditingId] = useState(null);
 
   async function fetchJobs() {
     const res = await fetch(`${API}/jobs`);
@@ -68,6 +69,35 @@ export default function App() {
       return;
     }
     fetchJobs();
+  }
+
+  function startEdit(job) {
+    setEditingId(job.id);
+
+    setForm({
+      company: job.company || "",
+      roleTitle: job.role_title || "",
+      status: job.status || "Saved",
+      location: job.location || "",
+      link: job.link || "",
+      notes: job.notes || "",
+      applied_date: job.applied_date ? String(job.applied_date).slice(0, 10) : "",
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setForm({
+      company: "",
+      roleTitle: "",
+      status: "Saved",
+      location: "",
+      link: "",
+      notes: "",
+      applied_date: "",
+    });
   }
 
   const filteredJobs =
