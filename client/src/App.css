@@ -241,6 +241,7 @@ select option { background: #111a2e; color: white; }
 .interview { background: rgba(255,200,90,0.18); color: #ffd27a; }
 .offer { background: rgba(90,255,150,0.18); color: #7fffbe; }
 .rejected { background: rgba(255,90,90,0.18); color: #ff9a9a; }
+.ghosted { background: rgba(180,180,180,0.18); color: #c9c9c9;}
 
 .actions {
   display: flex;
@@ -253,4 +254,56 @@ select option { background: #111a2e; color: white; }
   .container { margin: 48px auto; }
   .formRow { grid-template-columns: 1fr; }
   .toolbar { flex-direction: column; align-items: stretch; }
+}
+
+.iconBtn {
+  display: flex;              /* change from inline-flex */
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;     
+  
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(140,175,255,0.10);
+  cursor: pointer;
+
+  color: #cfe1ff;      
+
+  transition: all 0.18s ease;
+}
+
+.iconBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(140,175,255,0.18);
+}
+
+/* EDIT BUTTON */
+.iconBtn.edit {
+  color: lime !important;
+  background: rgba(97, 143, 251, 0.15);
+}
+
+.iconBtn.edit:hover {
+  background: rgba(140,175,255,0.25);
+  transform: translateY(-2px);
+}
+
+/* Delete button */
+.iconBtn.danger {
+  color: #ff9a9a;
+  background: rgba(255,90,90,0.14);
+}
+
+.iconBtn.danger:hover {
+  background: rgba(255,90,90,0.22);
+}
+
+.iconBtn svg {
+  width: 20px;        
+  height: 20px;
+  display: block;   
+  stroke: currentColor; 
 }

@@ -123,7 +123,7 @@ export default function App() {
           onChange={(e) => setFilterStatus(e.target.value)}
           style={{ maxWidth: 220 }}
         >
-          {["All", "Saved", "Applied", "Interview", "Offer", "Rejected"].map(
+          {["All", "Saved", "Applied", "Interview", "Offer", "Rejected", "Ghosted"].map(
             (s) => (
               <option key={s} value={s}>
                 {s}
@@ -155,16 +155,29 @@ export default function App() {
           value={form.status}
           onChange={(e) => setForm({ ...form, status: e.target.value })}
         >
-          {["Saved", "Applied", "Interview", "Offer", "Rejected"].map((s) => (
+          {["Saved", "Applied", "Interview", "Offer", "Rejected", "Ghosted"].map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
           ))}
         </select>
 
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+          {editingId && (
+            <button
+              className="iconBtn"
+              type="button"
+              onClick={cancelEdit}
+              title="Cancel edit"
+          >
+            <X size={18} strokeWidth={2.2} />
+          </button>
+        )}
+
         <button className="btn" type="submit">
-          Add Job
+          {editingId ? "Update Job" : "Add Job"}
         </button>
+      </div>
       </form>
 
       {/* Section 2 */}
@@ -237,11 +250,21 @@ export default function App() {
 
                 <div className="actions">
                   <button
+                    className="iconBtn edit"
+                    onClick={() => startEdit(j)}
+                    type="button"
+                    title="Edit job"
+                  >
+                    <Pencil color="#97bff7" />
+
+                  </button>
+
+                  <button
                     className="iconBtn danger"
                     onClick={() => deleteJob(j.id)}
                     type="button"
                   >
-                    <Trash2 size={18} strokeWidth={2.2} />
+                    <Trash2 />
                   </button>
 
                 </div>
